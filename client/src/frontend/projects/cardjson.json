@@ -1,0 +1,14 @@
+[
+    {
+      "image": "https://example.com/path/to/image1.png",
+      "title": "First Item Title",
+      "description": "Description for the first item.",
+      "link": "https://example.com/first-item"
+    },
+    {
+      "image": "https://example.com/path/to/image2.png",
+      "title": "Second Item Title",
+      "description": "Description for the second item.",
+      "link": "https://example.com/second-item"
+    }
+  ]
