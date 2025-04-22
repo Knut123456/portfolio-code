@@ -4,6 +4,7 @@ use std::collections::HashMap;
 use serde_json;
 use std::fs::File;
 use std::io::{Write, Result};
+static mut path: &str = r"src\config\config.json";
 
 fn create_json() -> Result<()>{
     let mut database_connect = HashMap::new();
@@ -22,7 +23,7 @@ fn create_json() -> Result<()>{
     println!("{}", json);
 
     // Write to file
-    let mut file = File::create("backend/src/config/connect_to_database.json")?;
+    let mut file = File::create(unsafe { path })?;
     file.write_all(json.as_bytes())?;
 
     println!("Data successfully written to connect_to_database.json");
@@ -30,8 +31,16 @@ fn create_json() -> Result<()>{
     Ok(())
 }  
 fn main() {
-    let mut create_jsons = create_json();
-    Ok((create_jsons));
+    match create_json() {
+        Ok(value) => {
+            // Handle success
+            println!("Success: {:?}", value);
+        }
+        Err(e) => {
+            // Handle error
+            eprintln!("Error: {:?}", e);
+        }
+    }
     
     let mut input_map  = IndexMap::new();
     input_map.insert("database settings", database_config as fn());
@@ -85,37 +94,8 @@ fn database_config(){
     data_input_map.insert("exit ", exit as fn());
     
     loop {
-        print!("please enter a valid number: ");
-        print!("
-
-");
-        let mut input_map_count = -1;
-        // Loop through the input_map and print each key-value pair
-        for (key, _value) in &data_input_map {
-            input_map_count += 1;
-            println!("{}: {}", input_map_count, key );
-        }
-    
-        // Flush the output buffer to ensure the prompt is displayed immediately
-        let mut database_input: String = String::new(); // Create a string variable
-        io::stdin() // Get the standard input stream
-            .read_line(&mut database_input) // The read_line function reads data until it reaches a '\n' character
-            .expect("Unable to read Stdin"); // In case the read operation fails, it panics with the given message
-
-        match database_input.trim().parse::<usize>() { // Parse the input string to a usize
-            Ok(index) if index < data_input_map.len() => { // Check if the index is within bounds
-                // Retrieve and call the corresponding function
-                if let Some((key, function)) = data_input_map.get_index(index) { // Get the key and function at the specified index
-                    // Call the function
-                    println!("You selected: {}", key);
-                    function();
-                    break;
-                }
-            }
-            _ => println!("Invalid selection. Please enter a valid number."),
-            
-        
-        }
+        let read_file = File::open(unsafe { path });
+        print!(read_file)
     }
 }
 
