@@ -18,16 +18,11 @@ fn create_toml() -> Result<()>{
 
     // Build an array
     doc["database"]["ports"] = value("3306");
-    doc["database"]["host"]         = value("");
+    doc["database"]["host"] = value("");
     doc["database"]["user"] = value("");
-    doc["database"]["password"]        = value("");
+    doc["database"]["password"] = value("");
 
-    /* // Optionally insert a comment
-    doc["database"]["ports"]
-        .as_array_mut()
-        .unwrap()
-        .decor_mut()
-        .set_prefix("\n# These are the ports the DB listens on\n"); */
+
 
     // Write out
     write(unsafe {PATH} , doc.to_string())?;
