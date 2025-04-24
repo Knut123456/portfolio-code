@@ -1,37 +1,40 @@
 use std::io;
 use indexmap::IndexMap;
-use std::collections::HashMap;
-use serde_json;
-use std::fs::File;
-use std::io::{Write, Result};
-static mut path: &str = r"src\config\config.json";
 
-fn create_json() -> Result<()>{
-    let mut database_connect = HashMap::new();
-    database_connect.insert("user", "");
-    database_connect.insert("password", "");
-    database_connect.insert("host", "");
-    database_connect.insert("database", "");
-    let mut vm: HashMap<&str, &str> = HashMap::new();
-        vm.insert("VM", "0");
-        vm.insert("VM machine", "");
-    let mut json_config = HashMap::new();
-    json_config.insert("VM", vm);
-    json_config.insert("Connect_to_database", database_connect);
-    let json = serde_json::to_string_pretty(&json_config).unwrap();
-    // Print JSON to console
-    println!("{}", json);
+use std::fs::write;
+use std::io::Result;
+use toml_edit::{value, DocumentMut};
 
-    // Write to file
-    let mut file = File::create(unsafe { path })?;
-    file.write_all(json.as_bytes())?;
+static mut PATH: &str = r"src\config\config.toml";
 
-    println!("Data successfully written to connect_to_database.json");
-    
+fn create_toml() -> Result<()>{
+// Start with an empty document
+    let mut doc: DocumentMut = DocumentMut::new();
+
+    // Set some values
+   
+    doc["VM"]["use"] = value("Alice");
+    doc["Vm"]["ip"]  = value("");
+
+    // Build an array
+    doc["database"]["ports"] = value("3306");
+    doc["database"]["host"]         = value("");
+    doc["database"]["user"] = value("");
+    doc["database"]["password"]        = value("");
+
+    /* // Optionally insert a comment
+    doc["database"]["ports"]
+        .as_array_mut()
+        .unwrap()
+        .decor_mut()
+        .set_prefix("\n# These are the ports the DB listens on\n"); */
+
+    // Write out
+    write(unsafe {PATH} , doc.to_string())?;
     Ok(())
 }  
 fn main() {
-    match create_json() {
+    match create_toml() {
         Ok(value) => {
             // Handle success
             println!("Success: {:?}", value);
@@ -89,14 +92,13 @@ fn exit() {
     std::process::exit(0); // Exit the program with a success status code
 }
 
-fn database_config(){
+fn database_config() {
     let mut data_input_map  = IndexMap::new();
     data_input_map.insert("exit ", exit as fn());
-    
     loop {
-        let read_file = File::open(unsafe { path });
-        print!(read_file)
+        
     }
+
 }
 
 fn connect_to_vm_paramters(){
