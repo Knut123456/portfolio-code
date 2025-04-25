@@ -1,9 +1,9 @@
 use std::io;
 use indexmap::IndexMap;
-
-use std::fs::write;
+use dialoguer::MultiSelect;
+use std::fs::{write, read_to_string};
 use std::io::Result;
-use toml_edit::{value, DocumentMut};
+use toml_edit::{value, DocumentMut, Item};
 
 static mut PATH: &str = r"src\config\config.toml";
 
@@ -39,10 +39,20 @@ fn main() {
             eprintln!("Error: {:?}", e);
         }
     }
+    let items = &["Apple", "Banana", "Cherry"];
+    let selection = MultiSelect::new()
+        .with_prompt("Pick your favorite fruits")
+        .items(items)
+        .interact()
+        .unwrap(); // :contentReference[oaicite:13]{index=13}
+
+    for idx in selection {
+        println!("You chose: {}", items[idx]);
+    }  
     
     let mut input_map  = IndexMap::new();
     input_map.insert("database settings", database_config as fn());
-    input_map.insert("connect ubuntu", connect_to_vm_paramters as fn());
+    input_map.insert("connect vm", connect_to_vm_paramters as fn());
     input_map.insert("exit ", exit as fn());
     
     
@@ -88,8 +98,15 @@ fn exit() {
 }
 
 fn database_config() {
-    let mut data_input_map  = IndexMap::new();
-    data_input_map.insert("exit ", exit as fn());
+    let contents = (unsafe {PATH})
+        .expect("Kunne ikke lese filen");
+    let toml_file = contents
+        .parse::<DocumentMut>()
+        .expect("Ugyldig TOML-dokument");
+    let db_table = toml_file["database"]
+        .as_table()                                                               // :contentReference[oaicite:4]{index=4}
+        .expect("`database` er ikke en tabell");
+    print!(r"{db_table}");
     loop {
         
     }
