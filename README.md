@@ -14,7 +14,7 @@ I terminalen så må du gå til client path og skrive `npm install` for å insta
 
 Rust trenger å gå til backend og skrive `cargo run--bin main` 
 
-Jeg valgte node med react fordi jeg hadde lyst til å lære ulike og bedre metoder til å lage en frontend og bruker tailwind.
+Jeg valgte node med react fordi jeg hadde lyst til å lære ulike og bedre metoder til å lage en frontend og bruker tailwind siden jeg liker css så godt og liker det bedre
 
 Jeg bruker rust fordi det er kjapt noe nytt og mer å lære.
 
