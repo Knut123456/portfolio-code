@@ -1,9 +1,9 @@
 use std::io;
 use indexmap::IndexMap;
 use dialoguer::MultiSelect;
-use std::fs::{write, read_to_string};
+use std::fs::write;
 use std::io::Result;
-use toml_edit::{value, DocumentMut, Item};
+use toml_edit::{value, DocumentMut};
 
 static mut PATH: &str = r"src\config\config.toml";
 
@@ -13,7 +13,7 @@ fn create_toml() -> Result<()>{
 
     // Set some values
    
-    doc["VM"]["use"] = value("Alice");
+    doc["VM"]["use"] = value(false);
     doc["Vm"]["ip"]  = value("");
 
     // Build an array
