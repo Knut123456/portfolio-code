@@ -1,33 +1,44 @@
 use std::io;
 use indexmap::IndexMap;
-use dialoguer::MultiSelect;
-use std::fs::File;
+use dialoguer::{console, MultiSelect};
+use std::fs::{File, read_to_string};
 use std::io::{Result, Write};
-use serde_json::{json, Value};
+use serde_json::{json, Value, from_str};
+use std::path::Path;
 
 const PATH: &str = r"src\config\config.json";
 
-fn create_toml() -> Result<()>{
+fn create_file() -> Result<()>{
 // Start with an empty document
-let config = json!({
-    "name": "John Doe",
-    "age": 43,
-    "phones": [
-        "+44 1234567",
-        "+44 2345678"
-    ]
-});
+if !Path::new(PATH).exists() {
+    let config = json!({
+        "database": {
+            "ipaddress": "",
+            "user": "",
+            "passwrod": "",
+            "port": "",
+        },
+        "vm":  {
+            "use": false,
+            "name": ""
+        }
+            
+            
+        
+    });
 
-// Step 2: Open or create the file
-let mut file = File::create(PATH)?;
+    // Step 2: Open or create the file
+    let mut file = File::create(PATH)?;
 
-// Step 3: Write the JSON object to the file
-write!(file, "{}", config.to_string())?;
+    // Step 3: Write the JSON object to the file
+    write!(file, "{}", config.to_string())?;
+
+} 
 Ok(())
 
 }  
 fn main() {
-    match create_toml() {
+    match create_file() {
         Ok(value) => {
             // Handle success
             println!("Success: {:?}", value);
@@ -37,16 +48,6 @@ fn main() {
             eprintln!("Error: {:?}", e);
         }
     }
-    let items = &["Apple", "Banana", "Cherry"];
-    let selection = MultiSelect::new()
-        .with_prompt("Pick your favorite fruits")
-        .items(items)
-        .interact()
-        .unwrap(); // :contentReference[oaicite:13]{index=13}
-
-    for idx in selection {
-        println!("You chose: {}", items[idx]);
-    }  
     
     let mut input_map  = IndexMap::new();
     input_map.insert("database settings", database_config as fn());
@@ -96,7 +97,14 @@ fn exit() {
 }
 
 fn database_config() {
+    let file = read_to_string(PATH)
+        .expect("Unable to read file");
 
+    let json: Value = from_str(&file)
+        .expect("JSON does not have correct format.");
+    let json_database = &json["database"];
+    print!("{json_database}")
+    
 }
 
 fn connect_to_vm_paramters(){
