@@ -4,6 +4,7 @@ use dialoguer::MultiSelect;
 use std::fs::write;
 use std::io::Result;
 use toml_edit::{value, DocumentMut};
+use polars::prelude
 
 static mut PATH: &str = r"src\config\config.toml";
 
