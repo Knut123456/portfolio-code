@@ -1,33 +1,30 @@
 use std::io;
 use indexmap::IndexMap;
 use dialoguer::MultiSelect;
-use std::fs::write;
-use std::io::Result;
-use toml_edit::{value, DocumentMut};
-use polars::prelude
+use std::fs::File;
+use std::io::{Result, Write};
+use serde_json::{json, Value};
 
-static mut PATH: &str = r"src\config\config.toml";
+const PATH: &str = r"src\config\config.json";
 
 fn create_toml() -> Result<()>{
 // Start with an empty document
-    let mut doc: DocumentMut = DocumentMut::new();
+let config = json!({
+    "name": "John Doe",
+    "age": 43,
+    "phones": [
+        "+44 1234567",
+        "+44 2345678"
+    ]
+});
 
-    // Set some values
-   
-    doc["VM"]["use"] = value(false);
-    doc["Vm"]["ip"]  = value("");
+// Step 2: Open or create the file
+let mut file = File::create(PATH)?;
 
-    // Build an array
-    doc["database"]["ports"] = value("3306");
-    doc["database"]["host"] = value("");
-    doc["database"]["user"] = value("");
-    doc["database"]["password"] = value("");
+// Step 3: Write the JSON object to the file
+write!(file, "{}", config.to_string())?;
+Ok(())
 
-
-
-    // Write out
-    write(unsafe {PATH} , doc.to_string())?;
-    Ok(())
 }  
 fn main() {
     match create_toml() {
@@ -99,18 +96,6 @@ fn exit() {
 }
 
 fn database_config() {
-    let contents = (unsafe {PATH})
-        .expect("Kunne ikke lese filen");
-    let toml_file = contents
-        .parse::<DocumentMut>()
-        .expect("Ugyldig TOML-dokument");
-    let db_table = toml_file["database"]
-        .as_table()                                                               // :contentReference[oaicite:4]{index=4}
-        .expect("`database` er ikke en tabell");
-    print!(r"{db_table}");
-    loop {
-        
-    }
 
 }
 
