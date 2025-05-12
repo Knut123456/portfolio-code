@@ -1,6 +1,5 @@
 use std::io;
 use indexmap::IndexMap;
-use dialoguer::{console, MultiSelect};
 use std::fs::{File, read_to_string};
 use std::io::{Result, Write};
 use serde_json::{json, Value, from_str};
