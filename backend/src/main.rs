@@ -3,8 +3,8 @@ use axum::{
     Router,
 };
 use std::net::SocketAddr;
-mod database;
 
+mod database;
 
 #[tokio::main]
 async fn main() {

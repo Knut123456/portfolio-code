@@ -1,10 +1,9 @@
-use sqlx::mysql::MySqlPoolOptions;
+
 use mysql::*;
-use mysql::prelude::*;
 use std::fs::read_to_string;
 use serde_json::{ Value, from_str};
-#[tokio::main]
-async fn database() -> Result<()> {
+
+pub fn database() -> Result<()> {
     let file = read_to_string("config/config.json")
         .expect("Unable to read file");
 
@@ -25,22 +24,6 @@ async fn database() -> Result<()> {
    
     // Get a connection from the pool
     let mut conn = pool.get_conn()?;
-    // Execute a query
-    // Read SQL from file at compile time
-    let sql = include_str!(" backend/src/config/database.sql");
-
-    // Execute the SQL
-    sqlx::query(sql)
-        .execute(&pool)
-        .await?;
-
-    println!("SQL executed successfully.");
-    Ok(())
-
-    // Process the results
-    for (id, name) in result {
-        println!("ID: {}, Name: {}", id, name);
-    }
 
     Ok(())
 }

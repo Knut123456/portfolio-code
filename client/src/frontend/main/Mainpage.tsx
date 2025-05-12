@@ -7,7 +7,7 @@ function Mainpage() {
 
   return (
     <>
-          <div className="bg-gray-900 dark:bg-gray-900 min-h-screen grid grid-rows-10  gap-5 ">
+          <div className="bg-gray-900  min-h-screen grid grid-rows-10  gap-5 ">
               {/* navbar */}
               <div className="row-start-1 row-end-2 ">
                 <Navbar />
