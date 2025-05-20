@@ -1,22 +1,25 @@
 
-use axum;
-use axum::routing::{get_service, Route};
+use std::sync::Arc;
 use axum::{
-    routing::get,
+    routing::{get_service, get},
     Router,
+    response::IntoResponse,
+    Json, 
+    extract::State
 };
-use mysql::{Pool, prelude::*};
+use std::error::Error;
 use std::result::Result;
 use tower_http::services::{ServeDir, ServeFile};
 mod database;
 use tokio; 
 use serde::Serialize;
+use serde_json::{Value, to_value, Result as jsonresult};
 
 
 #[tokio::main]
 
 async fn main() {
-    let app: Router = app();
+    let app: Router = app().await;
     let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
         .await
         .unwrap();
@@ -27,15 +30,23 @@ async fn main() {
         .unwrap();
 
 }
-
-fn app() -> Router {
+#[derive(Clone)]
+struct AppState {
+    pool: sqlx::MySqlPool,
+}
+async fn app() -> Router {
+    let pool = database::database_func()
+        .await
+        .expect("failed to connect to database");
     let static_files = ServeDir::new("src/assets/assets");
     let static_html = ServeFile::new("src/assets/index.html");
-    let project = project();
     let app = Router::new()
         .route_service("/", get_service(static_html))
         .nest_service("/assets", static_files)
-        .route("/project", get(project));     
+        .route("/project", get(project))
+        .with_state(Arc::new(AppState { pool }))
+        ;   
+      
     app  // returned implicitly
 }
 
@@ -47,15 +58,21 @@ struct Project {
     link_url: String, 
     description: String 
 }
-fn project() -> Result<(), Box<dyn std::error::Error>> {
-    let mut conn = database::database_func()?;
-    let project = conn.query_map(
-        "SELECT id, name, img_url, link_url, description FROM projects",
-        |(id, name, img_url, link_url, description)| Project { id, name, img_url, link_url, description },
-    )?;
-      // 2a. Compact JSON string
-    let json_compact = serde_json::to_string(&project)?;
-    Ok(json_compact);
-   
+async fn project(
+    State(state): State<Arc<AppState>>
+) -> impl IntoResponse {
+    // Acquire a connection—acquire() 
+    let mut conn = state.pool.acquire().await 
+        .expect("DB connection failed");
+    // Run your query
+    let projects: Vec<Project> = sqlx::query_as!(
+        Project, 
+        "SELECT id, name, img_url, link_url, description FROM projects"
+    )
+    .fetch_all(&mut conn)
+    .await
+    .expect("Query failed");
+    // Return JSON; 
+    Json(projects)
 }
 

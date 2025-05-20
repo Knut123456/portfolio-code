@@ -11,11 +11,14 @@ path = "src/main.rs"
 [dependencies]
 axum = "0.8.4"
 axum-extra = "0.10.1"
-axum-reverse-proxy = "0.8.0"
 fs = "0.0.5"
-mysql = "26.0.0"
 serde = "1.0.219"
 serde_json = "1.0.140"
+sqlx = { version = "0.8.6", default-features = false, features = [
+    "runtime-tokio",      # enable the Tokio async runtime
+    "mysql",              # enable the MySQL/MariaDB driver
+    "macros"              # enable the compile-time-checked query! macros
+] }
 tokio = { version = "1", features = ["full"] }
 tower-http =  { version = "0.6.4", features = ["fs"] }
 

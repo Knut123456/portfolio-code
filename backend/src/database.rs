@@ -1,33 +1,44 @@
-use mysql::*;
-use std::fs::read_to_string;
-use serde_json::{Value, from_str};
+use sqlx::{
+    Connection,
+    mysql::{MySqlPoolOptions, MySqlConnection, },
+    MySqlPool, pool::PoolConnection,
+};
+use serde::Deserialize;
+use std::{error::Error, fs, path::Path};
 
+#[derive(Deserialize)]
+struct DatabaseConfig {
+    ipaddress: String,
+    user: String,
+    port: Option<u16>,
+    password: String,
+    database: String,
+}
 
-pub fn database_func() -> Result<PooledConn> {
-    const PATH: &str = r"src\config\config.json";
-    let file = read_to_string(PATH)
-        .expect("Unable to read file");
+#[derive(Deserialize)]
+struct Config {
+    database: DatabaseConfig,
+}
 
-    let json: Value = from_str(&file)
-        .expect("JSON does not have correct format.");
+pub async fn database_func() -> Result<MySqlPool, Box<dyn Error>> {
+    // 1. Load config…
+    let contents = fs::read_to_string(Path::new("src/config/config.json"))?;
+    let cfg: Config = serde_json::from_str(&contents)?;
+    let db = cfg.database;
 
-    let json_database = &json["database"];
+    // 2. Build URL and connect
+    let url = format!(
+        "mysql://{}:{}@{}:{}/{}",
+        db.user, db.password, db.ipaddress, db.port.unwrap_or(3306), db.database
+    );
+    let pool = MySqlPoolOptions::new()
+        .max_connections(5)
+        .connect(&url)
+        .await?;  // establishes & pings initial connection
 
-    let ipaddress = &json_database["ipaddress"];
-    let user = &json_database["user"];
-    let port = &json_database["port"];
-    let password = &json_database["password"];
-    let host = &json_database["host"];
-    
-    // Define the database URL
-    let url: String = format!("mysql://{user}:{password}@{ipaddress}:{port}/{host}");
-    let convert_str: &str = url.as_str();
+    // 3. Acquire & ping on each startup check
+    let mut conn: PoolConnection<sqlx::MySql> = pool.acquire().await?;
+    conn.ping().await?;
 
-    // Create a connection pool
-    let pool = Pool::new(convert_str)?;
-
-    // Get a connection from the pool
-    let conn = pool.get_conn()?;
-
-    Ok(conn)
+    Ok(pool)
 }

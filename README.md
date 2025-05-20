@@ -46,6 +46,13 @@ Frontend vil da kjøre på [http://localhost:5173](http://localhost:5173) (som e
    cd backend
    ```
 
+2. Naviger til `backend`-mappen:
+
+   ```bash
+      cargo run --bin setup
+   ```
+  
+
 2. Kjør serveren:
 
    ```bash

@@ -3,9 +3,9 @@ use std::fs::{File, remove_file};
 use std::io::{Result, Write};
 use serde_json::json;
 use std::path::Path;
-use std::net::IpAddr;
 
-const PATH: &str = r"src\config\config.json";
+
+const PATH: &str = r"src\config\vm_config.json";
 
 fn main() -> Result<()> {
     // Start with an empty document
@@ -20,24 +20,17 @@ fn main() -> Result<()> {
             io::stdout().flush().unwrap(); // Ensure the prompt is displayed
             let mut input = String::new();
             io::stdin().read_line(&mut input).unwrap();
-            input.trim().to_string()
+            input.trim().to_string() // converts it into a string
         }
 
         // Prompt the user for each field
-        let ipaddressstring = read_input("Enter IP address: ");
-        let ipaddress: IpAddr = ipaddressstring.parse().expect("Not a valid IP address");
-        let user: String = read_input("Enter username: ");
-        let password = read_input("Enter password: ");
-        let portstring = read_input("Enter port (default 3306): ");
-        let port: i32 = portstring.parse().expect("Not a valid number");
-        let database = "PORTFOLIO".to_string();
+        let vm = read_input("Do you use VM: (yes or no) ");
+        let name = read_input("What is the name of the VM:  ");
         let config = json!({
-            "database": {
-                "ipaddress": ipaddress,
-                "user": user,
-                "password": password,
-                "port": port,
-                "database": database
+            "VM": {
+                "VM": vm,
+                "name": name,
+                
             }
         });
 
