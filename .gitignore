@@ -1,6 +1,6 @@
 
 client/node_modules/
-/backend/src/config/*
+/backend/src/config/
 !/backend/src/config/.gitkeep
 /backend/target
 

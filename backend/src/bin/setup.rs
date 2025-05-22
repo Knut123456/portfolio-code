@@ -20,7 +20,7 @@ fn main() -> Result<()> {
             io::stdout().flush().unwrap(); // Ensure the prompt is displayed
             let mut input = String::new();
             io::stdin().read_line(&mut input).unwrap();
-            input.trim().to_string()
+            input.trim().to_string() // converts it into a string
         }
 
         // Prompt the user for each field
@@ -41,10 +41,10 @@ fn main() -> Result<()> {
             }
         });
 
-    // Step 2: Open or create the file
+    //  Open or create the file
     let mut file = File::create(PATH)?;
 
-    // Step 3: Write the JSON object to the file
+    //  Write the JSON object to the file
     write!(file, "{}", config.to_string())?;
     
     

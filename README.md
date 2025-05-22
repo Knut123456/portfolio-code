@@ -37,34 +37,8 @@ Dette prosjektet består av en frontend bygget med **React + Tailwind CSS**, og 
 Frontend vil da kjøre på [http://localhost:5173](http://localhost:5173) (som er Vite sin standardport).
 
 ---
-
-### 🔹 Backend (Rust)
-
-1. Naviger til `backend`-mappen:
-
-   ```bash
-   cd backend
-   ```
-
-2. Naviger til `backend`-mappen:
-
-   ```bash
-      cargo run --bin setup
-   ```
-  
-
-2. Kjør serveren:
-
-   ```bash
-   cargo run --bin main
-   ```
-
-Backend vil da kjøre på [http://localhost:8080](http://localhost:8080).
-
----
-
 ## 🔐 Opprett bruker i MariaDB
-
+må være linux for dette skal fungere 
 1. Logg inn i MariaDB som root:
 
    ```bash
@@ -80,14 +54,44 @@ Backend vil da kjøre på [http://localhost:8080](http://localhost:8080).
    ```
 
    Husk å erstatte `brukernavn` og `passord` med det du faktisk vil bruke.
+---
+### 🔹 Backend (Rust)
+
+1. Naviger til `backend`-mappen:
+
+   ```bash
+   cd backend
+   ```
+
+2. lag en env fil i `backend`-mappen:
+
+   ```bash
+      bruker = "bruker din"
+      passord = "passord"
+      ip = ip 
+      port = port defult 3306
+      database = "PORTFOLIO" 
+   ```
+
+  
+
+3. Kjør serveren:
+
+   ```bash
+   cargo run --bin main
+   ```
+
+Backend vil da kjøre på [http://localhost:8080](http://localhost:8080).
 
 ---
+
+
 
 ## 💡 Hvorfor disse teknologiene?
 
 * Jeg valgte **React** med **Node/Vite** fordi jeg ønsket å lære nye og moderne metoder for å bygge frontend-applikasjoner.
 * Jeg bruker **Tailwind CSS** fordi jeg liker hvordan det forenkler og effektiviserer CSS-styling.
-* Jeg valgte **Rust** fordi det er et raskt, moderne og trygt språk som gir meg mye å lære – spesielt innen web og systemprogrammering.
+* Jeg valgte **Rust** fordi det er et raskt, moderne og trygt språk som gir meg mye å lære – 
 
 ---
 

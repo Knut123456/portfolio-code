@@ -1,44 +1,37 @@
-use sqlx::{
-    Connection,
-    mysql::{MySqlPoolOptions, MySqlConnection, },
-    MySqlPool, pool::PoolConnection,
-};
-use serde::Deserialize;
-use std::{error::Error, fs, path::Path};
+use sqlx::{mysql, prelude::FromRow, Connection};
+use dotenvy;
+use std::env;
 
-#[derive(Deserialize)]
-struct DatabaseConfig {
-    ipaddress: String,
-    user: String,
-    port: Option<u16>,
-    password: String,
-    database: String,
-}
+pub async fn database_func() -> mysql::MySqlConnectOptions {
 
-#[derive(Deserialize)]
-struct Config {
-    database: DatabaseConfig,
-}
+    dotenvy::dotenv().ok();     
+    let ip = env::var("ip")
+        .expect("ip must be set in .env or environment");
+    let port = env::var("port")
+        .expect("port must be set in .env or environment");
+    let bruker = env::var("bruker")
+        .expect("bruker must be set in .env or environment");
+    let passord = env::var("passord")
+        .expect("passord must be set in .env or environment");
+    let database = env::var("database")
+        .expect("database must be set in .env or environment");
+    let ip: &str = ip.as_str();
+    let port: u16 = port
+        .parse::<u16>()             
+        .expect("port must be a valid u16");
+    let bruker: &str = bruker.as_str(); 
+    let passord: &str = passord.as_str(); 
+    let database: &str = database.as_str(); 
+    let opt = mysql::MySqlConnectOptions::new().host(ip).port(port).username(bruker).password(passord).database(database);
+    let connection = mysql::MySqlConnection::connect_with(&opt).await.unwrap();
 
-pub async fn database_func() -> Result<MySqlPool, Box<dyn Error>> {
-    // 1. Load config…
-    let contents = fs::read_to_string(Path::new("src/config/config.json"))?;
-    let cfg: Config = serde_json::from_str(&contents)?;
-    let db = cfg.database;
-
-    // 2. Build URL and connect
-    let url = format!(
-        "mysql://{}:{}@{}:{}/{}",
-        db.user, db.password, db.ipaddress, db.port.unwrap_or(3306), db.database
-    );
-    let pool = MySqlPoolOptions::new()
-        .max_connections(5)
-        .connect(&url)
-        .await?;  // establishes & pings initial connection
-
-    // 3. Acquire & ping on each startup check
-    let mut conn: PoolConnection<sqlx::MySql> = pool.acquire().await?;
-    conn.ping().await?;
-
-    Ok(pool)
+    match connection.close().await {
+        Ok(()) => {
+            println!("Connection closed successfully.");
+        }
+        Err(e) => {
+            eprintln!("Failed to close connection: {}", e);
+        }
+    }
+    opt
 }
