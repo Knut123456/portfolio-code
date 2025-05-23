@@ -6,3 +6,4 @@ client/node_modules/
 
 /sql
 /backend/src/frontend_files
+backend/.env

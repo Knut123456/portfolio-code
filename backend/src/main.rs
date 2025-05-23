@@ -75,8 +75,7 @@ struct ProjectStruct {
         }
         Err(e) => {
             eprintln!("Failed to close connection: {}", e);
-            // You could perform additional recovery or logging here.
-        }
+                }
     }
 
     Json(rows)
