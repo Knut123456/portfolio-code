@@ -1,6 +1,6 @@
 
 import Navbar from '../../components/Navbar';
-import Profileinfo from "./Profileinfo"; 
+import Profileinfo from "../../components/Profileinfo"; 
 
 
 function Mainpage() {

@@ -1,4 +1,4 @@
-use sqlx::{mysql, prelude::FromRow, Connection};
+use sqlx::{mysql, Connection};
 use dotenvy;
 use std::env;
 
