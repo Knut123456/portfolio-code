@@ -1,7 +1,7 @@
 // App.jsx
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Mainpage from "./frontend/main/Mainpage"
-import Projectpage from "./frontend/projects/Projectpage"
+import Projectpage from "./components/Projectpage"
 
 function App() {
   return (

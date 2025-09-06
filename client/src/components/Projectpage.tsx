@@ -1,6 +1,6 @@
 
-import Navbar from '../../components/Navbar';
-import Cards_page from './Cards_page';
+import Navbar from './Navbar';
+import Cards_page from '../frontend/projects/Cards_page';
 function Projectpage() {
 
   return (
