@@ -59,10 +59,8 @@ struct ProjectStruct {
     
  ) -> impl IntoResponse {
     
-      dotenvy::dotenv().ok();                       
+    dotenvy::dotenv().ok();                       
 
-    
-    
     let opt = database::database_func().await;
     let mut connection = mysql::MySqlConnection::connect_with(&opt).await.unwrap();
 
