@@ -1,12 +1,12 @@
 
 import Navbar from '../../components/Navbar';
 import Profileinfo from "../../components/Profileinfo"; 
-
+import projectpage from "../../components/"; 
 
 function Mainpage() {
 
   return (
-    <>
+    <>  <div>
           <div className="bg-gray-900  min-h-screen grid grid-rows-10  gap-5 ">
               {/* navbar */}
               <div className="row-start-1 row-end-2 ">
@@ -17,6 +17,8 @@ function Mainpage() {
                 <Profileinfo />
               </div>
           </div>
+        </div>
+          
     </>
   )
 }

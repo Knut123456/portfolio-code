@@ -1,4 +1,4 @@
-import profile_picture from "../../assets/profile_picture.jpg" 
+import profile_picture from "/profile_picture.jpg" 
 function Profileinfo() {
     return(
         <>
